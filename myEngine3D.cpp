@@ -35,9 +35,10 @@ private:
     mesh meshCube; 
     mat4x4 matProj;
     /*
-        The reason we carry put the entrie matrix multiplication is because 
-        we may do alot in the future so having this function do it as a general case
-        helps alot
+        Applies a transform using a vector and a projection matrix to output a 
+        new vector on a newly projected space. Linear algebra
+        Input: A triangle to transform
+        Output: A triangle that has been transformed via the projection matrix
     */
     void multiplyMatrixVector(vec3d &input, vec3d&output, mat4x4 &mat){
 
@@ -54,7 +55,6 @@ private:
             output.y /= w;
             output.z /= w;
         }
-        
 
     }
 
@@ -121,7 +121,16 @@ class myEngine3D : public myConsoleGameEngine {
         // Draw the triangles
         // This is where we are gonna have to use projection 
         for (auto tri; meshCube.tris){
-            
+            // Triangle that has been transformed
+            triangle triProjected;
+            multiplyMatrixVector(tri.point[0], triProjected.point[0], matProj);
+            multiplyMatrixVector(tri.point[1], triProjected.point[1], matProj);
+            multiplyMatrixVector(tri.point[2], triProjected.point[2], matProj);
+
+            DrawTriangle(triProjected.p[0].x, triProjected.p[0].y,
+            triProjected.p[1].x, triProjected.p[1].y,
+            triProjected.p[2].x, triProjected.p[2].y,
+            PIXEL_SOLID, FG_WHITE)
 
         }
         return true;
